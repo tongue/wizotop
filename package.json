@@ -9,5 +9,8 @@
     "degit": "^2.8.0",
     "inquirer": "^7.3.3",
     "replace-in-file": "^6.1.0"
+  },
+  "bin": {
+    "wizotop": "index.js"
   }
 }
