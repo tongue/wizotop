@@ -2,66 +2,63 @@ const fs = require("fs");
 const path = require("path");
 const replace = require("replace-in-file");
 
-const replaceProjectName = async (files, projectName) => {
+const replaceAll = async (files, from, to) => {
+	const fromRegExp = new RegExp(from, "g");
 	try {
 		await replace({
 			files,
-			from: /projectName/g,
-			to: projectName
+			from: fromRegExp,
+			to
 		});
 	} catch (error) {
 		console.error(error);
-	}
-}
+	};
+};
 
-const replaceDomain = async (files, domain) => {
-	try {
-		await replace({
-			files,
-			from: /domain/g,
-			to: domain
-		});
-	} catch (error) {
-		console.error(error);
-	}
-}
+const replaceWordsInFiles = async (wordsToReplace, filesToUpdate) => {
+	for (const [from, to] of Object.entries(wordsToReplace)) {
+		await replaceAll(filesToUpdate, from, to);
+	};
+};
 
-const replaceOrgName = async (files, orgName) => {
-	try {
-		await replace({
-			files,
-			from: /orgname/g,
-			to: orgName
-		});
-	} catch (error) {
-		console.error(error);
-	}
-}
-
-async function cleanUpSvelte({ projectName, orgName, sapper, domain, storybook }) {
-	const root = path.join(process.cwd(), projectName);
-	const domainPath = path.join(root, "domain");
-	const domainPackageJson = path.join(domainPath, "package.json");
-	const storybookPackageJson = path.join(root, "storybook", "package.json");
-	const rootPackageJson = path.join(root, "package.json");
-	const rootReadme = path.join(root, "README.md");
-	const kitPackageJson = path.join(root, "packages", "kit", "package.json");
-
-	if (sapper) {
-		// replace occurence of domain in sapper package.json
-		await replaceDomain(domainPackageJson, domain);
-		await replaceOrgName(domainPackageJson, orgName);
-
-		await replaceDomain(rootPackageJson, domain);
-		await replaceOrgName(rootPackageJson, orgName);
-
-		await replaceDomain(rootReadme, domain);
-
+const renameFolders = (folders) => {
+	for (const [from, to] of Object.entries(folders)) {
 		try {
-			fs.renameSync(domainPath, path.join(root, domain));
+			if (fs.existsSync(from)) {
+				fs.renameSync(from, to);
+			}
 		} catch (error) {
 			console.error(error);
 		}
+	};
+};
+
+async function cleanUpSvelte({ projectName, orgname, sapper, domain, storybook }) {
+	const root = path.join(process.cwd(), projectName);
+	const domainPath = path.join(root, "domain");
+
+	const filesToUpdate = [
+		path.join(domainPath, "package.json"),
+		path.join(root, "storybook", "package.json"),
+		path.join(root, "package.json"),
+		path.join(root, "README.md"),
+		path.join(root, "packages", "kit", "package.json")
+	];
+
+	const wordsToReplace = {
+		domain,
+		orgname,
+		projectName
+	};
+
+	const foldersToRename = {
+		[domainPath]: domain
+	}
+
+	replaceWordsInFiles(wordsToReplace, filesToUpdate);
+	renameFolders(foldersToRename);
+
+	if (sapper) {
 	} else {
 		// remove all scripts and references to domain
 		// and remove domain folder
@@ -69,15 +66,9 @@ async function cleanUpSvelte({ projectName, orgName, sapper, domain, storybook }
 
 	// TODO: If you choose not to have sapper but storybook
 	// another static folder is needed.
-	if (storybook) {
-		await replaceOrgName(storybookPackageJson, orgName);
-		await replaceDomain(storybookPackageJson, domain);
-	} else {
+	if (!storybook) {
 		// remove all storybook scripts and folder
 	}
-
-	await replaceOrgName(kitPackageJson, orgName);
-	await replaceProjectName(rootReadme, projectName);
 }
 
 module.exports = cleanUpSvelte;

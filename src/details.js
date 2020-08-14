@@ -10,7 +10,7 @@ async function details() {
 		},
 		{
 			type: "input",
-			name: "orgName",
+			name: "orgname",
 			message: "Organisation name?",
 			default: "isotop",
 			validate: (value) => value.match(/^[0-9a-z_-]+$/) ? true : "Please enter a valid organisation name (only lowercase letters and no spaces)",
