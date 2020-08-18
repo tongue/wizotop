@@ -1,7 +1,8 @@
-const inquirer = require("inquirer");
+import inquirer from "inquirer";
+import { TypeOfProject, Options } from "./wizard";
 
-async function project(type) {
-	let questions;
+export default async function project(type: TypeOfProject) {
+	let questions: any[];
 	switch(type) {
 		case "svelte":
 			questions = [
@@ -14,7 +15,7 @@ async function project(type) {
 					type: "input",
 					name: "domain",
 					message: "Domain where sapper will be run?",
-					when: (answers) => answers["sapper"],
+					when: (answers: Options) => answers["sapper"],
 					validate: (value) => value.match(/^((?:([a-z0-9]\.|[a-z0-9][a-z0-9\-]{0,61}[a-z0-9])\.)+)([a-z0-9]{2,63}|(?:[a-z0-9][a-z0-9\-]{0,61}[a-z0-9]))\.?$/) ? true : "Enter a valid domain. Ex: isotop.se",
 				}
 			];
@@ -34,5 +35,3 @@ async function project(type) {
 
 	return await inquirer.prompt(questions);
 }
-
-module.exports = project;

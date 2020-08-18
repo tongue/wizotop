@@ -1,11 +1,12 @@
-const fs = require("fs");
-const path = require("path");
-const replace = require("replace-in-file");
+import fs from "fs";
+import path from "path";
+import { replaceInFile } from "replace-in-file";
+import { Options } from "./wizard";
 
-const replaceAll = async (files, from, to) => {
+const replaceAll = async (files: string[], from: string, to: string) => {
 	const fromRegExp = new RegExp(from, "g");
 	try {
-		await replace({
+		await replaceInFile({
 			files,
 			from: fromRegExp,
 			to
@@ -15,13 +16,13 @@ const replaceAll = async (files, from, to) => {
 	};
 };
 
-const replaceWordsInFiles = async (wordsToReplace, filesToUpdate) => {
+const replaceWordsInFiles = async (wordsToReplace: {[key: string]: string}, filesToUpdate: string[]) => {
 	for (const [from, to] of Object.entries(wordsToReplace)) {
 		await replaceAll(filesToUpdate, from, to);
 	};
 };
 
-const renameFolders = (folders) => {
+const renameFolders = (folders: {[key: string]: string}) => {
 	for (const [from, to] of Object.entries(folders)) {
 		try {
 			if (fs.existsSync(from)) {
@@ -33,7 +34,7 @@ const renameFolders = (folders) => {
 	};
 };
 
-async function cleanUpSvelte({ projectName, orgname, sapper, domain, storybook }) {
+export async function cleanUpSvelte({ projectName, orgname, sapper, domain, storybook }: Options) {
 	const root = path.join(process.cwd(), projectName);
 	const domainPath = path.join(root, "domain");
 
@@ -70,5 +71,3 @@ async function cleanUpSvelte({ projectName, orgname, sapper, domain, storybook }
 		// remove all storybook scripts and folder
 	}
 }
-
-module.exports = cleanUpSvelte;
