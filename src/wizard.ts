@@ -6,31 +6,31 @@ import scaffold from "./scaffold";
 export type TypeOfProject = "svelte" | "react" | "vanilla";
 
 export interface Options {
-	projectName: string,
-	orgname: string,
-	domain: string,
-	typeOfProject: TypeOfProject,
-	sapper?: boolean,
-	storybook?: boolean,
-};
+  projectName: string;
+  orgname: string;
+  domain: string;
+  typeOfProject: TypeOfProject;
+  sapper?: boolean;
+  storybook?: boolean;
+}
 
 let options: Options = {
-	projectName: "",
-	orgname: "",
-	domain: "",
-	typeOfProject: "svelte",
+  projectName: "",
+  orgname: "",
+  domain: "",
+  typeOfProject: "svelte",
 };
 
 export default async function scaffolder() {
-	const title = await font.create("wizotop", "Doom");
+  const title = await font.create("wizotop", "Doom");
 
-	console.log(title);
+  console.log(title);
 
-	const { typeOfProject, ...detailsData } = await details();
-	options = { ...options, ...detailsData, typeOfProject };
+  const { typeOfProject, ...detailsData } = await details();
+  options = { ...options, ...detailsData, typeOfProject };
 
-	const projectData = await project(typeOfProject);
-	options = {...options, ...projectData};
+  const projectData = await project(typeOfProject);
+  options = { ...options, ...projectData };
 
-	await scaffold(options);
+  await scaffold(options);
 }

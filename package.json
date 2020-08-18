@@ -21,7 +21,6 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "start": "tsc && node dist",
-		"prettier": "yarn prettier --write ."
+    "start": "tsc && node dist"
   }
 }
