@@ -1,8 +1,8 @@
 import clone from "./clone";
 import { Options } from "./wizard";
 
-export default async function scaffold(options: Options) {
+const scaffold = async (options: Options) => {
   await clone(options);
+};
 
-  console.log(`${options.projectName} was created!`);
-}
+export default scaffold;

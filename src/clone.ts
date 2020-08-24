@@ -9,13 +9,15 @@ const repos = {
   vanilla: "tongue/vanilla-template",
 };
 
-export default async ({ typeOfProject, projectName }: Options) => {
-  const emitter = degit(repos[typeOfProject], {
+const clone = async ({ type_of_project, project_name }: Options) => {
+  const emitter = degit(repos[type_of_project], {
     cache: false,
     force: true,
     verbose: false,
   });
 
   emitter.on("info", log);
-  return await emitter.clone(`${projectName}`);
+  return await emitter.clone(`${project_name}`);
 };
+
+export default clone;

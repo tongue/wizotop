@@ -1,36 +1,27 @@
-import font from "ascii-art-font";
-import details from "./details";
-import project from "./project";
+import inquirer from "inquirer";
+import questions from "./questions";
 import scaffold from "./scaffold";
+import { printAsciiText } from "./utils";
 
 export type TypeOfProject = "svelte" | "react" | "vanilla";
 
 export interface Options {
-  projectName: string;
-  orgname: string;
+  project_name: string;
+  org_name: string;
   domain: string;
-  typeOfProject: TypeOfProject;
+  type_of_project: TypeOfProject;
   sapper?: boolean;
   storybook?: boolean;
 }
 
-let options: Options = {
-  projectName: "",
-  orgname: "",
-  domain: "",
-  typeOfProject: "svelte",
-};
+const wizard = async () => {
+  await printAsciiText("wizotop");
 
-export default async function scaffolder() {
-  const title = await font.create("wizotop", "Doom");
-
-  console.log(title);
-
-  const { typeOfProject, ...detailsData } = await details();
-  options = { ...options, ...detailsData, typeOfProject };
-
-  const projectData = await project(typeOfProject);
-  options = { ...options, ...projectData };
+  const options: Options = await inquirer.prompt(questions);
 
   await scaffold(options);
-}
+
+  console.log(`${options.project_name} was created!`);
+};
+
+export default wizard;
