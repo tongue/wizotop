@@ -34,8 +34,8 @@ const cleanUp = async ({
     files = [...files, "storybook/package.json"];
   }
 
-  replaceWordsInFiles({ words, files, root });
-  renameFolders({ folders, root });
+  await replaceWordsInFiles({ words, files, root });
+  await renameFolders({ folders, root });
 };
 
 export default cleanUp;

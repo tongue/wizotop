@@ -48,9 +48,12 @@ interface RenameFolders {
 export const renameFolders = ({ folders, root = "" }: RenameFolders) => {
   for (const [from, to] of Object.entries(folders)) {
     try {
-      if (fs.existsSync(from)) {
-        fs.renameSync(path.join(root, from), path.join(root, to));
-      }
+			const joinedFrom = path.join(root, from);
+      if (fs.existsSync(joinedFrom)) {
+        fs.renameSync(joinedFrom, path.join(root, to));
+      } else {
+				console.error("no such file:", from);
+			}
     } catch (error) {
       console.error(error);
     }

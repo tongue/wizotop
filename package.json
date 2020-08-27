@@ -11,7 +11,7 @@
     "replace-in-file": "^6.1.0"
   },
   "bin": {
-    "wizotop": "index.js"
+    "wizotop": "dist/index.js"
   },
   "devDependencies": {
     "@types/inquirer": "^7.3.0",
@@ -21,6 +21,7 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "start": "tsc && node dist"
+    "start": "tsc && node dist",
+    "build": "tsc"
   }
 }
